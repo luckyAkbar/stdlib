@@ -10,7 +10,10 @@ import (
 
 // Cacher :nodoc:
 type Cacher interface {
+	// Get get cache value by given key. Return json string if found. Otherwise return a non nil error
 	Get(ctx context.Context, key string) (string, error)
+
+	// Set set a cache value by key with the given expiry time. The value should be a json string
 	Set(ctx context.Context, key string, value string, exp time.Duration) error
 }
 
@@ -25,7 +28,6 @@ func NewCacher(client *redis.Client) Cacher {
 	}
 }
 
-// Get get cache value by given key. Return json string if found. Otherwise return a non nil error
 func (c *cacher) Get(ctx context.Context, key string) (string, error) {
 	res, err := c.client.Get(ctx, key).Result()
 	switch err {
@@ -38,7 +40,6 @@ func (c *cacher) Get(ctx context.Context, key string) (string, error) {
 	}
 }
 
-// Set set a cache value by key with the given expiry time. The val should be a json string
 func (c *cacher) Set(ctx context.Context, key string, val string, exp time.Duration) error {
 	err := c.client.Set(ctx, key, val, exp).Err()
 	if err != nil {
