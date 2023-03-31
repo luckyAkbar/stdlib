@@ -47,13 +47,17 @@ check-cognitive-complexity:
       -exec gocognit -over 15 {} +
 
 cacher/mock/redis.go:
-		mockgen -destination=cacher/mock/redis.go -package=mock github.com/luckyAkbar/stdlib/cacher Cacher
+		mockgen -destination=cacher/mock/mock_redis.go -package=cacher_mock github.com/luckyAkbar/stdlib/cacher Cacher
 
-mockgen: cacher/mock/redis.go
+mail/mock/mail_utility_utility.go:
+		mockgen -destination=mail/mock/mock_mail_utility_utility.go -package=mail_mock github.com/luckyAkbar/stdlib/mail Utility
 
-migrate:
-	@if [ "$(DIRECTION)" = "" ] || [ "$(STEP)" = "" ]; then\
-    	$(migrate_up);\
-	else\
-		go run main.go migrate --direction=$(DIRECTION) --step=$(STEP);\
-    fi
+mail/mock/mail_utility_client.go:
+		mockgen -destination=mail/mock/mock_mail_utility_client.go -package=mail_mock github.com/luckyAkbar/stdlib/mail Client
+
+mockgen: cacher/mock/redis.go \
+	mail/mock/mail_utility_utility.go \
+	mail/mock/mail_utility_client.go
+
+clean:
+	find -type f -name 'mock_*.go' -delete
