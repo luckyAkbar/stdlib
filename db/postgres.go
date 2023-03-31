@@ -1,3 +1,4 @@
+// Package db contains all database related functionalities
 package db
 
 import (
