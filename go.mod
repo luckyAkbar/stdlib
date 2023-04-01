@@ -3,6 +3,7 @@ module github.com/luckyAkbar/stdlib
 go 1.19
 
 require (
+	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.12
 	github.com/alicebob/miniredis/v2 v2.30.1
 	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.3.0
