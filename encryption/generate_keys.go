@@ -25,12 +25,8 @@ type KeyGenerationOpts struct {
 }
 
 var defaultKeyGenerationOpts = &KeyGenerationOpts{
-	Random:          rand.Reader,
-	Bits:            2048,
-	PEMFormat:       true,
-	GOBFormat:       true,
-	PublicFilename:  "public",
-	PrivateFilename: "private",
+	Random: rand.Reader,
+	Bits:   2048,
 }
 
 // GenerateKey generate private and public key. Based on value in config,
