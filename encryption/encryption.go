@@ -7,8 +7,8 @@ import (
 	"io"
 )
 
-// EncryptionOpts is the options for encryption
-type EncryptionOpts struct {
+// Opts is the options for encryption
+type Opts struct {
 	Random    io.Reader
 	Hash      hash.Hash
 	PublicKey *rsa.PublicKey
@@ -16,7 +16,7 @@ type EncryptionOpts struct {
 }
 
 // Encrypt will encrypt the data using rsa.EncryptOAEP
-func Encrypt(data []byte, opts *EncryptionOpts) ([]byte, error) {
+func Encrypt(data []byte, opts *Opts) ([]byte, error) {
 	enc, err := rsa.EncryptOAEP(opts.Hash, opts.Random, opts.PublicKey, data, opts.Label)
 	if err != nil {
 		return nil, err
@@ -26,7 +26,7 @@ func Encrypt(data []byte, opts *EncryptionOpts) ([]byte, error) {
 }
 
 // EncryptToBase64 wrapper for Encrypt then encode the output to base64
-func EncryptToBase64(data []byte, opts *EncryptionOpts) (string, error) {
+func EncryptToBase64(data []byte, opts *Opts) (string, error) {
 	enc, err := Encrypt(data, opts)
 	if err != nil {
 		return "", err

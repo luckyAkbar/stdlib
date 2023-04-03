@@ -18,7 +18,7 @@ func TestEncrypt(t *testing.T) {
 
 	t.Run("ok", func(t *testing.T) {
 		data := []byte("hello world")
-		opts := &encryption.EncryptionOpts{
+		opts := &encryption.Opts{
 			Random:    rand.Reader,
 			Hash:      crypto.SHA512.New(),
 			PublicKey: &key.PublicKey,
@@ -40,7 +40,7 @@ func TestEncrypt(t *testing.T) {
 
 	t.Run("msg too long", func(t *testing.T) {
 		data := make([]byte, 999999999)
-		opts := &encryption.EncryptionOpts{
+		opts := &encryption.Opts{
 			Random:    rand.Reader,
 			Hash:      crypto.SHA512.New(),
 			PublicKey: &key.PublicKey,
@@ -52,7 +52,7 @@ func TestEncrypt(t *testing.T) {
 
 	t.Run("ok - encrypt to base64", func(t *testing.T) {
 		data := []byte("hello world")
-		opts := &encryption.EncryptionOpts{
+		opts := &encryption.Opts{
 			Random:    rand.Reader,
 			Hash:      crypto.SHA512.New(),
 			PublicKey: &key.PublicKey,
