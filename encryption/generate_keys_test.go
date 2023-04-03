@@ -46,6 +46,16 @@ func TestGenerateKey(t *testing.T) {
 		}
 
 		_, err := encryption.GenerateKey(cfg)
+		assert.NoError(t, err)
+	})
+
+	t.Run("bits invalid", func(t *testing.T) {
+		cfg := &encryption.KeyGenerationOpts{
+			Random: rand.Reader,
+			Bits:   10,
+		}
+
+		_, err := encryption.GenerateKey(cfg)
 		assert.Error(t, err)
 	})
 }
