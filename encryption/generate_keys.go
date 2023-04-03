@@ -1,3 +1,4 @@
+// Package encryption provide functionality about encryption process
 package encryption
 
 import (

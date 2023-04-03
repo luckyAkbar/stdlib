@@ -1,3 +1,4 @@
+// Package example containing sample code for using this library
 package example
 
 import (
@@ -10,6 +11,7 @@ import (
 	stdlib_http "github.com/luckyAkbar/stdlib/http"
 )
 
+// APIResponse is example how to run API and see the API response with signature
 func APIResponse() {
 	ec := echo.New()
 	privatePem := `-----BEGIN RSA PRIVATE KEY-----

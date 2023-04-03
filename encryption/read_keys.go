@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 )
 
+// ReadKey will read private key in form of []byte
 func ReadKey(key []byte) (*rsa.PrivateKey, error) {
 	block, _ := pem.Decode(key)
 
@@ -19,6 +20,7 @@ func ReadKey(key []byte) (*rsa.PrivateKey, error) {
 	return privateKey, nil
 }
 
+// ReadKeyFromFile wrapper for ReadKey with option to read file based on path location
 func ReadKeyFromFile(path string) (*rsa.PrivateKey, error) {
 	r, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {
