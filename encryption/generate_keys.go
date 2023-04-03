@@ -34,7 +34,8 @@ var defaultKeyGenerationOpts = &KeyGenerationOpts{
 // either way, will still return *rsa.PrivateKey.
 // if failure happen when generating the file(s), will call os.Exit(1)
 func GenerateKey(config *KeyGenerationOpts) (*rsa.PrivateKey, error) {
-	if config == nil {
+	// safety check
+	if config == nil || config.Random == nil || config.Bits == 0 {
 		config = defaultKeyGenerationOpts
 	}
 
@@ -74,7 +75,7 @@ func savePEMKey(fileName string, key *rsa.PrivateKey) {
 	defer helper.WrapCloser(outFile.Close)
 
 	var privateKey = &pem.Block{
-		Type:  "PRIVATE KEY",
+		Type:  "RSA PRIVATE KEY",
 		Bytes: x509.MarshalPKCS1PrivateKey(key),
 	}
 
