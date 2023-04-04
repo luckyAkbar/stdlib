@@ -9,10 +9,10 @@ import (
 
 // StandardResponse is a standard response for all API
 type StandardResponse struct {
-	Success bool   `json:"success"`
-	Message string `json:"message"`
-	Status  int    `json:"status"`
-	Data    any    `json:"data"`
+	Success bool   `json:"success,omitempty"`
+	Message string `json:"message,omitempty"`
+	Status  int    `json:"status,omitempty"`
+	Data    any    `json:"data,omitempty"`
 	Error   string `json:"error,omitempty"`
 }
 
