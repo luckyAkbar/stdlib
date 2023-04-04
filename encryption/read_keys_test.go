@@ -44,7 +44,7 @@ func TestReadKeyFromFile(t *testing.T) {
 
 func TestReadKey(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
-		key := `-----BEGIN RSA PRIVATE KEY-----
+		key := encryption.ParseTestKey(`-----BEGIN RSA TESTING KEY-----
 MIIEpAIBAAKCAQEA37/7OzLTSBubEeRWSKSRHIJwk+uAnGFFJenKo9TXPh1oa/20
 l92hsVeWk76+oo6jRqHskiOUoYYlxiofriomZlM8OyDrDNndaE+havKvvsfksLzq
 sAgM/JEfXOpzrAooI0I07EKNI7smhRRrivOY0jLETBfdZ0r729tPvahgKzf4kpiU
@@ -70,8 +70,8 @@ jyRfjjofUk9wWtY+sEwS9lB/RlkcfIJ3DkJqC6oHH+6wt2kFlBaNr8vb+3n+EPvq
 YWI1bQKBgQDRwc3Jrm/+zjfR3BypS9GW/AV4PG5+Ua+djN1rsSkXKthcnA68bXe6
 YXY0IRpoR2MUhC13PqruU9u9WBp0fcYtU/yWJJkCRaYSsBEfDZe+553O/Hr+SQjm
 Bfg6AwEBACcmHq/3z/EDdeol5D1sAg223xEiAD+ABceWHpzoaCNyRg==
------END RSA PRIVATE KEY-----
-`
+-----END RSA TESTING KEY-----
+`)
 
 		_, err := encryption.ReadKey([]byte(key))
 
@@ -80,7 +80,7 @@ Bfg6AwEBACcmHq/3z/EDdeol5D1sAg223xEiAD+ABceWHpzoaCNyRg==
 
 	t.Run("not ok", func(t *testing.T) {
 		// pkcs8 format
-		key := `-----BEGIN PRIVATE KEY-----
+		key := encryption.ParseTestKey(`-----BEGIN TESTING KEY-----
 MIIBVgIBADANBgkqhkiG9w0BAQEFAASCAUAwggE8AgEAAkEAq7BFUpkGp3+LQmlQ
 Yx2eqzDV+xeG8kx/sQFV18S5JhzGeIJNA72wSeukEPojtqUyX2J0CciPBh7eqclQ
 2zpAswIDAQABAkAgisq4+zRdrzkwH1ITV1vpytnkO/NiHcnePQiOW0VUybPyHoGM
@@ -89,8 +89,8 @@ lt6waE7I2uSPqIC20LcCIQDJQYIHQII+3YaPqyhGgqMexuuuGx+lDKD6/Fu/JwPb
 5QIhAKthiYcYKlL9h8bjDsQhZDUACPasjzdsDEdq8inDyLOFAiEAmCr/tZwA3qeA
 ZoBzI10DGPIuoKXBd3nk/eBxPkaxlEECIQCNymjsoI7GldtujVnr1qT+3yedLfHK
 srDVjIT3LsvTqw==
------END PRIVATE KEY-----
-`
+-----END TESTING KEY-----
+`)
 
 		_, err := encryption.ReadKey([]byte(key))
 

@@ -78,7 +78,7 @@ func TestVerify(t *testing.T) {
 	data := `{"success":true,"message":"Success","status":200,"data":{"message":"Hello World"}}`
 	signature := "vCSvHMKEKSkJnPZP877yDJ5cRjHprGA9Xor8dK09F5wLhPSjQCkeqNxeTFfjSFyWTXZ200DBH6tVzdVpuBlFuAV9cYe1pWF1f4q0BxdOA2MepXbQfJw0tTHWdC8fH+TFq2WdyuL42E6dhdySJwa3aE3Na0LCFpSO5quD8KhcIesK78gemErx2fo0ZEq1MLe7vqR+QjlRTdcog28S/cYJCBXJ2ZAbz+oCimW2v7fG9PnIHzNj1mIa2Wm8412J3BdeG8nUXebQRi52gjFwnVK5mFJqOzE2pXSIP69mbMfsC72ZcBPtznp2jFr5r/uIAx+tCG1qGMrajH5YjUzvaOlXsg=="
 
-	privatePem := `-----BEGIN RSA PRIVATE KEY-----
+	privatePem := encryption.ParseTestKey(`-----BEGIN RSA TESTING KEY-----
 MIIEowIBAAKCAQEAwiSX09qKwzg+eunMwn4AulMCHc2z77jy2Mx0Ehc4x014l0Oz
 W5+V5rYadipEM2gLLCdb2nE9hY0+0zC3GEoxoT5ksLdDw6kSOiI5iYQsKkULG9aT
 2g4Bw14VPLiEt2jpzU3D80XueVsQD6OvfG9LErMEkIggTtfJWUx37SUFgddq/XOD
@@ -104,8 +104,8 @@ XjtE0NqQYRzg0pAmZfim1PyledP+6Gq/gBkwbrYwdpqrb8yZN00DDWEsKmS9h3xV
 E3z1ywKBgHSt/WzI0sp1lBmm2N/S3QAmvv2XaGHO0Zlr8fvcgwHuu7X1NBLEuUri
 euJMSq2sQEtD49W2+9DKcOvI+qnlyumeOryCY2NTRTeFznUBwPpnx0+hvC3xF9j+
 SGUVK+7JIUp8ee5gCqsJrzK82j00IH6kk6zrX6zvQN3Zd5O4ImZd
------END RSA PRIVATE KEY-----
-`
+-----END RSA TESTING KEY-----
+`)
 	key, err := encryption.ReadKey([]byte(privatePem))
 	assert.NoError(t, err)
 
