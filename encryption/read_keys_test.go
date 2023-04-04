@@ -97,3 +97,79 @@ srDVjIT3LsvTqw==
 		assert.Error(t, err)
 	})
 }
+
+func TestReadPublicKey(t *testing.T) {
+	t.Run("ok", func(t *testing.T) {
+		pub := `-----BEGIN PUBLIC KEY-----
+MIIBCgKCAQEAuRozdJRuXNPUocFebG/lTpWvXjk7ciCBomBPybVwPMSbBxonBRbu
+lgZ9OhwYsqp99BAyaeTikTHkHAW+oP7LZF5AGN0NPZ66Py9G6zhAmPnoBUcp/CV0
+64lJj7ykd6b6EmZyKw3X+uMwwr46bFU9m/Nx29L3yUIZlrnbnoVjzJbSmZXRJVTt
+2aRSlv7+aFr20HbIyMtA/+QTm4T+KZuKBl1BBe0edCkNDrZQVqP1w/kjIfOt0s0t
+hxhnxBsM64h/83CiWb3zqLhDpOdpe88Xw6VShLEc+cts5b6VOjwgK9sn4rOmP13g
+JdJGprKgw66DT6swVH1+x1zgVbpgGdKc+QIDAQAB
+-----END PUBLIC KEY-----
+`
+
+		_, err := encryption.ReadPublicKey([]byte(pub))
+		assert.NoError(t, err)
+	})
+
+	t.Run("not ok", func(t *testing.T) {
+		pub := `-----BEGIN RSA PUBLIC KEY-----
+MIIBCgKCAQEAuRozdJRuXNPUocFebG/lTpWvXjk7ciCBomBPybVwPMSbBxonBRbu
+lgZ9OhwYsqp99BAyaeTikTHkHAW+oP7LZF5AGN0NPZ66Py9G6zhAmPnoBUcp/CV0
+64lJj7ykd6b6EmZyKw3X+uMwwr46bFU9m/Nx29L3yUIZlrnbnoVjzJbSmZXRJVTt
+2aRSlv7+aFr20HbIyMtA/+QTm4T+KZuKBl1BBe0edCkNDrZQVqP1w/kjIfOt0s0t
+hxhnxBsM64h/83CiWb3zqLhDpOdpe88Xw6VShLEc+cts5b6VOjwgK9sn4rOmP13g
+JdJGprKgw66DT6swVH1+x1zgVbpgGdKc+QIDAQAB
+-----END RSA PUBLIC KEY-----
+`
+
+		_, err := encryption.ReadPublicKey([]byte(pub))
+		assert.Error(t, err)
+	})
+
+	t.Run("not ok", func(t *testing.T) {
+		pub := `-----BEGIN PUBLIC KEY-----
+	MIIBCgKCAQEAuRozdJRuXNPUocFebG/lTpWvXjk7ciCBomBPybVwPMSbBxonBRbu
+	lgZ9OhwYsqp99BAyaeTikTHkHAW+oP7LZF5AGN0NPZ66Py9G6zhAmPnoBUcp/CV0
+	64lJj7ykd6b6EmZyKw3X+uMwwr46bFU9m/Nx29L3yUIZlrnbnoVjzJbSmZXRJVTt
+	2aRSlv7+aFr20HbIyMtA/+QTm4T+KZu1BBe0edCkNDrZQVqP1w/kjIfOt0s0t
+	hxhnxBsM64h/83CiWb3zqLhDpOdpe88Xw6VShLEc+cts5b6VOjwgK9sn4rOmP13g
+	JdJGprKgw66DT6swVH1+x1zgVbpgGdKc+QIDAQAB
+	-----END PUBLIC KEY-----
+	`
+
+		_, err := encryption.ReadPublicKey([]byte(pub))
+		assert.Error(t, err)
+	})
+
+	t.Run("read from file", func(t *testing.T) {
+		key, err := encryption.GenerateKey(&encryption.KeyGenerationOpts{
+			Random:          rand.Reader,
+			Bits:            2048,
+			PEMFormat:       true,
+			PublicFilename:  "__testing_readfile_public",
+			PrivateFilename: "__testing_readfile_private",
+		})
+		assert.NoError(t, err)
+		assert.FileExists(t, "./__testing_readfile_public.pem")
+		assert.FileExists(t, "./__testing_readfile_private.pem")
+
+		pub, err := encryption.ReadPublicKeyFromFile("./__testing_readfile_public.pem")
+		assert.NoError(t, err)
+
+		assert.Equal(t, key.PublicKey, *pub)
+
+		err = os.Remove("./__testing_readfile_public.pem")
+		assert.NoError(t, err)
+
+		err = os.Remove("./__testing_readfile_private.pem")
+		assert.NoError(t, err)
+	})
+
+	t.Run("read from file failed", func(t *testing.T) {
+		_, err := encryption.ReadPublicKeyFromFile("./imaginary_key_never_exists.pem")
+		assert.Error(t, err)
+	})
+}
