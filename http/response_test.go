@@ -7,9 +7,9 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/luckyAkbar/stdlib/encryption"
-	"github.com/luckyAkbar/stdlib/http"
 	"github.com/stretchr/testify/assert"
+	"github.com/sweet-go/stdlib/encryption"
+	"github.com/sweet-go/stdlib/http"
 )
 
 func TestGenerateAPIResponse(t *testing.T) {

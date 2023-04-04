@@ -6,8 +6,8 @@ import (
 	"encoding/base64"
 	"testing"
 
-	"github.com/luckyAkbar/stdlib/encryption"
 	"github.com/stretchr/testify/assert"
+	"github.com/sweet-go/stdlib/encryption"
 )
 
 func TestSign(t *testing.T) {

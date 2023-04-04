@@ -5,14 +5,14 @@ import (
 	"context"
 
 	"github.com/labstack/echo/v4"
-	"github.com/luckyAkbar/stdlib/helper"
+	"github.com/sweet-go/stdlib/helper"
 )
 
 // ReqIDCtxKeyType is the type for context key for request ID
 type ReqIDCtxKeyType string
 
 // ReqIDCtxKey is the key for request ID in context
-const ReqIDCtxKey ReqIDCtxKeyType = "github.com/luckyAkbar/stdlib:echo_middleware:ReqIDCtxKey"
+const ReqIDCtxKey ReqIDCtxKeyType = "github.com/sweet-go/stdlib:echo_middleware:ReqIDCtxKey"
 
 // RequestID is a middleware to generate request ID and set it to context
 // if in the request header already have request ID in key `X-Request-ID` and `overrideHeader` is true,

@@ -7,8 +7,8 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/luckyAkbar/stdlib/encryption"
-	stdlib_http "github.com/luckyAkbar/stdlib/http"
+	"github.com/sweet-go/stdlib/encryption"
+	stdlib_http "github.com/sweet-go/stdlib/http"
 )
 
 // APIResponse is example how to run API and see the API response with signature

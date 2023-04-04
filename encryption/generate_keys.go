@@ -12,7 +12,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/luckyAkbar/stdlib/helper"
+	"github.com/sweet-go/stdlib/helper"
 )
 
 // KeyGenerationOpts option to generate key

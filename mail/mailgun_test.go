@@ -6,9 +6,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/luckyAkbar/stdlib/mail"
 	mailgun "github.com/mailgun/mailgun-go/v4"
 	"github.com/stretchr/testify/assert"
+	"github.com/sweet-go/stdlib/mail"
 )
 
 func TestMailgun(t *testing.T) {

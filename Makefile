@@ -47,16 +47,16 @@ check-cognitive-complexity:
       -exec gocognit -over 15 {} +
 
 cacher/mock/redis.go:
-		mockgen -destination=cacher/mock/mock_redis.go -package=cacher_mock github.com/luckyAkbar/stdlib/cacher Cacher
+		mockgen -destination=cacher/mock/mock_redis.go -package=cacher_mock github.com/sweet-go/stdlib/cacher Cacher
 
 mail/mock/mail_utility_utility.go:
-		mockgen -destination=mail/mock/mock_mail_utility_utility.go -package=mail_mock github.com/luckyAkbar/stdlib/mail Utility
+		mockgen -destination=mail/mock/mock_mail_utility_utility.go -package=mail_mock github.com/sweet-go/stdlib/mail Utility
 
 mail/mock/mail_utility_client.go:
-		mockgen -destination=mail/mock/mock_mail_utility_client.go -package=mail_mock github.com/luckyAkbar/stdlib/mail Client
+		mockgen -destination=mail/mock/mock_mail_utility_client.go -package=mail_mock github.com/sweet-go/stdlib/mail Client
 
 encryption/mock/mock_jwt_token_generator.go:
-		mockgen -destination=encryption/mock/mock_jwt_token_generator.go -package=encryption_mock github.com/luckyAkbar/stdlib/encryption JWTTokenGenerator
+		mockgen -destination=encryption/mock/mock_jwt_token_generator.go -package=encryption_mock github.com/sweet-go/stdlib/encryption JWTTokenGenerator
 
 mockgen: cacher/mock/redis.go \
 	mail/mock/mail_utility_utility.go \
