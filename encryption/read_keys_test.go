@@ -13,7 +13,7 @@ func TestReadKeyFromFile(t *testing.T) {
 	t.Run("file not exists", func(t *testing.T) {
 		filename := "./_test_notexits.pem"
 
-		_, err := encryption.ReadKeyFromFile(filename)
+		_, _, err := encryption.ReadKeyFromFile(filename)
 
 		assert.Error(t, err)
 	})
@@ -28,7 +28,7 @@ func TestReadKeyFromFile(t *testing.T) {
 		})
 		assert.NoError(t, err)
 
-		_, err = encryption.ReadKeyFromFile("_test_private_TestReadKeyFromFile.pem")
+		_, _, err = encryption.ReadKeyFromFile("_test_private_TestReadKeyFromFile.pem")
 		assert.NoError(t, err)
 
 		assert.FileExists(t, "_test_public_TestReadKeyFromFile.pem")
@@ -156,7 +156,7 @@ JdJGprKgw66DT6swVH1+x1zgVbpgGdKc+QIDAQAB
 		assert.FileExists(t, "./__testing_readfile_public.pem")
 		assert.FileExists(t, "./__testing_readfile_private.pem")
 
-		pub, err := encryption.ReadPublicKeyFromFile("./__testing_readfile_public.pem")
+		_, pub, err := encryption.ReadPublicKeyFromFile("./__testing_readfile_public.pem")
 		assert.NoError(t, err)
 
 		assert.Equal(t, key.PublicKey, *pub)
@@ -169,7 +169,7 @@ JdJGprKgw66DT6swVH1+x1zgVbpgGdKc+QIDAQAB
 	})
 
 	t.Run("read from file failed", func(t *testing.T) {
-		_, err := encryption.ReadPublicKeyFromFile("./imaginary_key_never_exists.pem")
+		_, _, err := encryption.ReadPublicKeyFromFile("./imaginary_key_never_exists.pem")
 		assert.Error(t, err)
 	})
 }

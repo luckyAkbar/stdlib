@@ -22,13 +22,14 @@ func ReadKey(key []byte) (*rsa.PrivateKey, error) {
 }
 
 // ReadKeyFromFile wrapper for ReadKey with option to read file based on path location
-func ReadKeyFromFile(path string) (*rsa.PrivateKey, error) {
+func ReadKeyFromFile(path string) ([]byte, *rsa.PrivateKey, error) {
 	r, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {
-		return nil, err
+		return []byte{}, nil, err
 	}
 
-	return ReadKey(r)
+	key, err := ReadKey(r)
+	return r, key, err
 }
 
 // ReadPublicKey will read public key
@@ -51,11 +52,12 @@ func ReadPublicKey(key []byte) (*rsa.PublicKey, error) {
 }
 
 // ReadPublicKeyFromFile wrapper for ReadPublicKey with option to read file based on path location
-func ReadPublicKeyFromFile(path string) (*rsa.PublicKey, error) {
+func ReadPublicKeyFromFile(path string) ([]byte, *rsa.PublicKey, error) {
 	r, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {
-		return nil, err
+		return []byte{}, nil, err
 	}
 
-	return ReadPublicKey(r)
+	key, err := ReadPublicKey(r)
+	return r, key, err
 }
