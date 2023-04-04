@@ -6,10 +6,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/luckyAkbar/stdlib/helper"
-	"github.com/luckyAkbar/stdlib/mail"
 	"github.com/sendinblue/APIv3-go-library/lib"
 	"github.com/stretchr/testify/assert"
+	"github.com/sweet-go/stdlib/helper"
+	"github.com/sweet-go/stdlib/mail"
 )
 
 func TestSendInBlue(t *testing.T) {

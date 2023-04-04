@@ -3,9 +3,9 @@ package mail_test
 import (
 	"testing"
 
-	"github.com/luckyAkbar/stdlib/helper"
-	"github.com/luckyAkbar/stdlib/mail"
 	"github.com/stretchr/testify/assert"
+	"github.com/sweet-go/stdlib/helper"
+	"github.com/sweet-go/stdlib/mail"
 	"gopkg.in/guregu/null.v4"
 )
 

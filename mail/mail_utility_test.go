@@ -5,10 +5,10 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/luckyAkbar/stdlib/helper"
-	"github.com/luckyAkbar/stdlib/mail"
-	mail_mock "github.com/luckyAkbar/stdlib/mail/mock"
 	"github.com/stretchr/testify/assert"
+	"github.com/sweet-go/stdlib/helper"
+	"github.com/sweet-go/stdlib/mail"
+	mail_mock "github.com/sweet-go/stdlib/mail/mock"
 )
 
 func TestMailUtility_SendEmail(t *testing.T) {

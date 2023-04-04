@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/luckyAkbar/stdlib/helper"
 	sendinblue "github.com/sendinblue/APIv3-go-library/lib"
+	"github.com/sweet-go/stdlib/helper"
 )
 
 // SendInBlueSignature send in blue client signature

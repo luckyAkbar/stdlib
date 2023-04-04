@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/luckyAkbar/stdlib/encryption"
 	"github.com/stretchr/testify/assert"
+	"github.com/sweet-go/stdlib/encryption"
 )
 
 func TestGenerateKey(t *testing.T) {

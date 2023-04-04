@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/luckyAkbar/stdlib/encryption"
 	"github.com/stretchr/testify/assert"
+	"github.com/sweet-go/stdlib/encryption"
 )
 
 func TestGenerateJWTToken(t *testing.T) {

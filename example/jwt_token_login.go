@@ -6,8 +6,8 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
-	"github.com/luckyAkbar/stdlib/encryption"
 	"github.com/sirupsen/logrus"
+	"github.com/sweet-go/stdlib/encryption"
 )
 
 // JWTToken is an example of how to use JWT token

@@ -4,7 +4,7 @@ package http
 import (
 	"encoding/json"
 
-	"github.com/luckyAkbar/stdlib/encryption"
+	"github.com/sweet-go/stdlib/encryption"
 )
 
 // StandardResponse is a standard response for all API

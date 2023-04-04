@@ -1,4 +1,4 @@
-module github.com/luckyAkbar/stdlib
+module github.com/sweet-go/stdlib
 
 go 1.19
 
