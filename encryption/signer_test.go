@@ -4,7 +4,6 @@ import (
 	"crypto"
 	"crypto/rand"
 	"encoding/base64"
-	"fmt"
 	"testing"
 
 	"github.com/luckyAkbar/stdlib/encryption"
@@ -27,8 +26,6 @@ func TestSign(t *testing.T) {
 			Alg:     alg,
 			PSSOpts: nil,
 		})
-
-		fmt.Println(base64.StdEncoding.EncodeToString(signature))
 
 		assert.NoError(t, err)
 
