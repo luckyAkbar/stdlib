@@ -55,9 +55,13 @@ mail/mock/mail_utility_utility.go:
 mail/mock/mail_utility_client.go:
 		mockgen -destination=mail/mock/mock_mail_utility_client.go -package=mail_mock github.com/luckyAkbar/stdlib/mail Client
 
+encryption/mock/mock_jwt_token_generator.go:
+		mockgen -destination=encryption/mock/mock_jwt_token_generator.go -package=encryption_mock github.com/luckyAkbar/stdlib/encryption JWTTokenGenerator
+
 mockgen: cacher/mock/redis.go \
 	mail/mock/mail_utility_utility.go \
-	mail/mock/mail_utility_client.go
+	mail/mock/mail_utility_client.go \
+	encryption/mock/mock_jwt_token_generator.go
 
 clean:
 	find -type f -name 'mock_*.go' -delete
