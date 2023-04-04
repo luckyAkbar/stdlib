@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/luckyAkbar/stdlib/encryption"
 	"github.com/sirupsen/logrus"
@@ -43,11 +42,6 @@ YrJ+pzmLjmyKtg9ubpkQy6/tmHjprvI5vSYQOyVA+vSSF4lHsEJvQi63EJZ7BQIf
 ugO2voQz8H++ZICpQiCns4CdLtPC1fAq2LOzinOq45Hb3XFWT7c1N5k=
 -----END RSA TESTING KEY-----
 `)
-	// key, err := encryption.ReadKey([]byte(privatePem))
-
-	// if err != nil {
-	// 	panic(err)
-	// }
 
 	jwtgen := encryption.NewJWTTokenHandler(jwt.SigningMethodHS256, []byte(privatePem))
 
@@ -81,11 +75,7 @@ ugO2voQz8H++ZICpQiCns4CdLtPC1fAq2LOzinOq45Hb3XFWT7c1N5k=
 	})
 
 	g := ec.Group("/protected")
-
-	g.Use(echojwt.WithConfig(echojwt.Config{
-		SigningKey:    []byte(privatePem),
-		SigningMethod: jwt.SigningMethodHS256.Alg(),
-	}))
+	g.Use(jwtgen.BuildEchoJWTMiddleware())
 
 	g.GET("/p", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]interface{}{

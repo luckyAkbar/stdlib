@@ -2,6 +2,8 @@ package encryption
 
 import (
 	"github.com/golang-jwt/jwt/v4"
+	echojwt "github.com/labstack/echo-jwt/v4"
+	"github.com/labstack/echo/v4"
 )
 
 // JWTTokenGenerator is an interface for working with JWT tokens
@@ -13,6 +15,10 @@ type JWTTokenGenerator interface {
 	// if error is not nil, the token also maybe not nil
 	// so if the error is not nil, consider the token as invalid / don't use it
 	ValidateJWTToken(token string) (*jwt.Token, error)
+
+	// BuildEchoJWTMiddleware builds a echo middleware for JWT token validation
+	// with configuration set according to supplied Method and SigningKey in NewJWTTokenHandler
+	BuildEchoJWTMiddleware() echo.MiddlewareFunc
 }
 
 type jwtToken struct {
@@ -49,4 +55,11 @@ func (jtg *jwtToken) ValidateJWTToken(token string) (*jwt.Token, error) {
 	}
 
 	return t, nil
+}
+
+func (jtg *jwtToken) BuildEchoJWTMiddleware() echo.MiddlewareFunc {
+	return echojwt.WithConfig(echojwt.Config{
+		SigningKey:    jtg.SigningKey,
+		SigningMethod: jtg.Method.Alg(),
+	})
 }
