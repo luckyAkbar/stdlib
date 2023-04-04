@@ -26,7 +26,7 @@ func TestGenerateAPIResponse(t *testing.T) {
 			},
 		}
 
-		privatePem := `-----BEGIN RSA PRIVATE KEY-----
+		privatePem := encryption.ParseTestKey(`-----BEGIN RSA TESTING KEY-----
 MIIEowIBAAKCAQEAwiSX09qKwzg+eunMwn4AulMCHc2z77jy2Mx0Ehc4x014l0Oz
 W5+V5rYadipEM2gLLCdb2nE9hY0+0zC3GEoxoT5ksLdDw6kSOiI5iYQsKkULG9aT
 2g4Bw14VPLiEt2jpzU3D80XueVsQD6OvfG9LErMEkIggTtfJWUx37SUFgddq/XOD
@@ -52,8 +52,8 @@ XjtE0NqQYRzg0pAmZfim1PyledP+6Gq/gBkwbrYwdpqrb8yZN00DDWEsKmS9h3xV
 E3z1ywKBgHSt/WzI0sp1lBmm2N/S3QAmvv2XaGHO0Zlr8fvcgwHuu7X1NBLEuUri
 euJMSq2sQEtD49W2+9DKcOvI+qnlyumeOryCY2NTRTeFznUBwPpnx0+hvC3xF9j+
 SGUVK+7JIUp8ee5gCqsJrzK82j00IH6kk6zrX6zvQN3Zd5O4ImZd
------END RSA PRIVATE KEY-----
-`
+-----END RSA TESTING KEY-----
+`)
 		key, err := encryption.ReadKey([]byte(privatePem))
 		assert.NoError(t, err)
 
