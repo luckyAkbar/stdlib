@@ -1,10 +1,19 @@
 package encryption
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
 	"crypto/rsa"
 	"encoding/base64"
 	"hash"
 	"io"
+	"net/http"
+	"os"
+
+	"github.com/sirupsen/logrus"
+	custerr "github.com/sweet-go/stdlib/error"
+	"github.com/sweet-go/stdlib/helper"
 )
 
 // Opts is the options for encryption
@@ -83,4 +92,98 @@ func DecryptFromBase64(data string, opts *DecryptionOpts) ([]byte, error) {
 	}
 
 	return Decrypt(decoded, opts)
+}
+
+type FileEncryptionOpts struct {
+	SourcePath   string
+	OutputPath   string
+	AESKeyLength AESKeyLength
+	Key          *KeyComponent
+
+	// BufferSize size must be multiple of 16 bytes
+	BufferSize int
+}
+
+func (feo *FileEncryptionOpts) GetKeyLength() int {
+	switch feo.AESKeyLength {
+	case AES128:
+		return 16
+	case AES192:
+		return 24
+	case AES256:
+		return 32
+	default:
+		return 16
+	}
+}
+
+func (feo *FileEncryptionOpts) GetKey() []byte {
+	return feo.Key.Bytes[:feo.GetKeyLength()]
+}
+
+func EncryptFile(opts *FileEncryptionOpts) (iv []byte, err error) {
+	source, err := os.Open(opts.SourcePath)
+	if err != nil {
+		return nil, &custerr.ErrChain{
+			Message: "unable to open source file",
+			Cause:   err,
+			Code:    http.StatusInternalServerError,
+		}
+	}
+
+	defer helper.WrapCloser(source.Close)
+
+	block, err := aes.NewCipher(opts.GetKey())
+	if err != nil {
+		return nil, &custerr.ErrChain{
+			Message: "failed to create chiper block",
+			Cause:   err,
+			Code:    http.StatusInternalServerError,
+		}
+	}
+
+	// Never use more than 2^32 random nonces with a given key
+	// because of the risk of repeat.
+	iv = make([]byte, block.BlockSize())
+	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
+		return nil, &custerr.ErrChain{
+			Message: "failed to read file",
+			Cause:   err,
+			Code:    http.StatusInternalServerError,
+		}
+	}
+
+	dest, err := os.Create(opts.OutputPath)
+	if err != nil {
+		return nil, &custerr.ErrChain{
+			Message: "unable to create destination file",
+			Cause:   err,
+			Code:    http.StatusInternalServerError,
+		}
+	}
+
+	defer helper.WrapCloser(dest.Close)
+
+	buf := make([]byte, opts.BufferSize)
+	stream := cipher.NewCTR(block, iv)
+	for {
+		n, err := source.Read(buf)
+		if n > 0 {
+			stream.XORKeyStream(buf, buf[:n])
+			// Write into file
+			dest.Write(buf[:n])
+		}
+
+		if err == io.EOF {
+			break
+		}
+
+		// should we report error?
+		if err != nil {
+			logrus.Warn("error while reading file to encryption", err)
+			break
+		}
+	}
+
+	return iv, nil
 }
