@@ -22,6 +22,7 @@ type APIResponse struct {
 	Signature string `json:"signature"`
 }
 
+// APIResponseGenerator is an interface containing functionalities to generate standard API response
 type APIResponseGenerator interface {
 	GenerateAPIResponse(response *StandardResponse, opts *encryption.SignOpts) (*APIResponse, error)
 }

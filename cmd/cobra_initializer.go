@@ -1,3 +1,4 @@
+// Package cmd contain standard cobra command and logger setup
 package cmd
 
 import (

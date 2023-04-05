@@ -1,3 +1,4 @@
+// Package config is used to read the config file
 package config
 
 import (

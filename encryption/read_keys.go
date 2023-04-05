@@ -9,6 +9,18 @@ import (
 	"path/filepath"
 )
 
+// KeyComponent is a struct that contains private key, public key, and bytes
+type KeyComponent struct {
+	// PrivateKey will only be populated when reading private key
+	PrivateKey *rsa.PrivateKey
+
+	// PublicKey will always be populated
+	PublicKey *rsa.PublicKey
+
+	// Bytes contains actual bytes of key file
+	Bytes []byte
+}
+
 // ReadKey will read private key in form of []byte
 func ReadKey(key []byte) (*rsa.PrivateKey, error) {
 	block, _ := pem.Decode(key)
@@ -22,14 +34,22 @@ func ReadKey(key []byte) (*rsa.PrivateKey, error) {
 }
 
 // ReadKeyFromFile wrapper for ReadKey with option to read file based on path location
-func ReadKeyFromFile(path string) ([]byte, *rsa.PrivateKey, error) {
+func ReadKeyFromFile(path string) (*KeyComponent, error) {
 	r, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {
-		return []byte{}, nil, err
+		return nil, err
 	}
 
 	key, err := ReadKey(r)
-	return r, key, err
+	if err != nil {
+		return nil, err
+	}
+
+	return &KeyComponent{
+		PrivateKey: key,
+		PublicKey:  &key.PublicKey,
+		Bytes:      r,
+	}, nil
 }
 
 // ReadPublicKey will read public key
@@ -52,12 +72,20 @@ func ReadPublicKey(key []byte) (*rsa.PublicKey, error) {
 }
 
 // ReadPublicKeyFromFile wrapper for ReadPublicKey with option to read file based on path location
-func ReadPublicKeyFromFile(path string) ([]byte, *rsa.PublicKey, error) {
+// this function will return only public key and set private key to nil
+func ReadPublicKeyFromFile(path string) (*KeyComponent, error) {
 	r, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {
-		return []byte{}, nil, err
+		return nil, err
 	}
 
 	key, err := ReadPublicKey(r)
-	return r, key, err
+	if err != nil {
+		return nil, err
+	}
+
+	return &KeyComponent{
+		PublicKey: key,
+		Bytes:     r,
+	}, nil
 }

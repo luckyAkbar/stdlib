@@ -1,7 +1,10 @@
+// Package custerr contains custom error types
 package custerr
 
 import "fmt"
 
+// ErrChain is a custom error type that can be used to chain errors
+// satisfy the error interface
 type ErrChain struct {
 	Message string
 	Cause   error
@@ -10,6 +13,7 @@ type ErrChain struct {
 	Type    error
 }
 
+// Error returns the error message
 func (err ErrChain) Error() string {
 	bcoz := ""
 	fields := ""
