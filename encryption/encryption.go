@@ -25,6 +25,28 @@ func Encrypt(data []byte, opts *Opts) ([]byte, error) {
 	return enc, nil
 }
 
+func EncryptWithSteps(data []byte, opts *Opts) ([]byte, error) {
+	msgLen := len(data)
+	step := opts.PublicKey.Size() - 2*opts.Hash.Size() - 2
+	var encryptedBytes []byte
+
+	for start := 0; start < msgLen; start += step {
+		finish := start + step
+		if finish > msgLen {
+			finish = msgLen
+		}
+
+		encryptedBlockBytes, err := Encrypt(data[start:finish], opts)
+		if err != nil {
+			return nil, err
+		}
+
+		encryptedBytes = append(encryptedBytes, encryptedBlockBytes...)
+	}
+
+	return encryptedBytes, nil
+}
+
 // EncryptToBase64 wrapper for Encrypt then encode the output to base64
 func EncryptToBase64(data []byte, opts *Opts) (string, error) {
 	enc, err := Encrypt(data, opts)
