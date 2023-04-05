@@ -22,21 +22,25 @@ type APIResponse struct {
 	Signature string `json:"signature"`
 }
 
+type APIResponseGenerator interface {
+	GenerateAPIResponse(response *StandardResponse, opts *encryption.SignOpts) (*APIResponse, error)
+}
+
 // APIResponseGenerator is a struct containing functionalities to generate API response with signature
-type APIResponseGenerator struct {
+type apiResponseGenerator struct {
 	defaultEncryptionOpts *encryption.SignOpts
 }
 
 // NewStandardAPIResponseGenerator is a constructor for APIResponseGenerator
-func NewStandardAPIResponseGenerator(defaultEncryptionOpts *encryption.SignOpts) *APIResponseGenerator {
-	return &APIResponseGenerator{
+func NewStandardAPIResponseGenerator(defaultEncryptionOpts *encryption.SignOpts) APIResponseGenerator {
+	return &apiResponseGenerator{
 		defaultEncryptionOpts: defaultEncryptionOpts,
 	}
 }
 
 // GenerateAPIResponse is a function to generate API response with signature.
 // If opts is nil, it will use defaultEncryptionOpts
-func (arg *APIResponseGenerator) GenerateAPIResponse(response *StandardResponse, opts *encryption.SignOpts) (*APIResponse, error) {
+func (arg *apiResponseGenerator) GenerateAPIResponse(response *StandardResponse, opts *encryption.SignOpts) (*APIResponse, error) {
 	if opts == nil {
 		opts = arg.defaultEncryptionOpts
 	}
