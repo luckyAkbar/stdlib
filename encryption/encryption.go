@@ -189,3 +189,94 @@ func EncryptFile(opts *FileEncryptionOpts) (iv []byte, err error) {
 
 	return iv, nil
 }
+
+func DecryptFile(opts *FileEncryptionOpts) ([]byte, error) {
+	infile, err := os.Open(opts.SourcePath)
+	if err != nil {
+		return nil, &custerr.ErrChain{
+			Message: "unable to open source file for decryption",
+			Cause:   err,
+			Code:    http.StatusInternalServerError,
+		}
+	}
+	defer infile.Close()
+
+	block, err := aes.NewCipher(opts.GetKey())
+	if err != nil {
+		return nil, &custerr.ErrChain{
+			Message: "failed to create chiper block",
+			Cause:   err,
+			Code:    http.StatusInternalServerError,
+		}
+	}
+
+	// Never use more than 2^32 random nonces with a given key
+	// because of the risk of repeat.
+	fi, err := infile.Stat()
+	if err != nil {
+		return nil, &custerr.ErrChain{
+			Message: "failed to get file info",
+			Cause:   err,
+			Code:    http.StatusInternalServerError,
+		}
+	}
+
+	iv := make([]byte, block.BlockSize())
+	msgLen := fi.Size() - int64(len(iv))
+	_, err = infile.ReadAt(iv, msgLen)
+	if err != nil {
+		return nil, &custerr.ErrChain{
+			Message: "failed to read file's chunks",
+			Cause:   err,
+			Code:    http.StatusInternalServerError,
+		}
+	}
+
+	outfile, err := os.OpenFile(opts.OutputPath, os.O_RDWR|os.O_CREATE, 0777)
+	if err != nil {
+		return nil, &custerr.ErrChain{
+			Message: "failed open destination decrypted file",
+			Cause:   err,
+			Code:    http.StatusInternalServerError,
+		}
+	}
+	defer helper.WrapCloser(outfile.Close)
+
+	// The buffer size must be multiple of 16 bytes
+	buf := make([]byte, opts.BufferSize)
+	stream := cipher.NewCTR(block, iv)
+	for {
+		n, err := infile.Read(buf)
+		if n > 0 {
+			// The last bytes are the IV, don't belong the original message
+			if n > int(msgLen) {
+				n = int(msgLen)
+			}
+			msgLen -= int64(n)
+			stream.XORKeyStream(buf, buf[:n])
+			// Write into file
+			outfile.Write(buf[:n])
+		}
+
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			break
+		}
+	}
+
+	decrypted, err := os.ReadFile(opts.OutputPath)
+	if err != nil {
+		return nil, &custerr.ErrChain{
+			Message: "failed to read decrypted file",
+			Cause:   err,
+			Code:    http.StatusInternalServerError,
+		}
+	}
+
+	defer helper.DeleteFile(opts.OutputPath)
+
+	return decrypted, nil
+}
