@@ -185,5 +185,7 @@ func EncryptFile(opts *FileEncryptionOpts) (iv []byte, err error) {
 		}
 	}
 
+	dest.Write(iv)
+
 	return iv, nil
 }
