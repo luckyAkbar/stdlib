@@ -6,11 +6,14 @@ import "fmt"
 // ErrChain is a custom error type that can be used to chain errors
 // satisfy the error interface
 type ErrChain struct {
+	// Required
 	Message string
-	Cause   error
-	Code    int
-	Fields  map[string]interface{}
-	Type    error
+
+	// Required
+	Cause  error
+	Code   int
+	Fields map[string]interface{}
+	Type   error
 }
 
 // Error returns the error message
