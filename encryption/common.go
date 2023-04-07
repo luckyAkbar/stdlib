@@ -2,8 +2,10 @@ package encryption
 
 import "strings"
 
+// AESKeyLength is the length of AES key
 type AESKeyLength int
 
+// list of available aes key length to choose from
 const (
 	AES128 AESKeyLength = 16
 	AES192 AESKeyLength = 24

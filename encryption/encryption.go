@@ -34,6 +34,8 @@ func Encrypt(data []byte, opts *Opts) ([]byte, error) {
 	return enc, nil
 }
 
+// EncryptWithSteps will encrypt the data using rsa.EncryptOAEP chunk by chunk. This is useful when the data is
+// too large to be encrypted using Encrypt
 func EncryptWithSteps(data []byte, opts *Opts) ([]byte, error) {
 	msgLen := len(data)
 	step := opts.PublicKey.Size() - 2*opts.Hash.Size() - 2
@@ -94,6 +96,7 @@ func DecryptFromBase64(data string, opts *DecryptionOpts) ([]byte, error) {
 	return Decrypt(decoded, opts)
 }
 
+// FileEncryptionOpts is the options for file encryption & decryption
 type FileEncryptionOpts struct {
 	SourcePath   string
 	OutputPath   string
@@ -104,6 +107,7 @@ type FileEncryptionOpts struct {
 	BufferSize int
 }
 
+// GetKeyLength will return the key length based on AESKeyLength
 func (feo *FileEncryptionOpts) GetKeyLength() int {
 	switch feo.AESKeyLength {
 	case AES128:
@@ -117,10 +121,12 @@ func (feo *FileEncryptionOpts) GetKeyLength() int {
 	}
 }
 
-func (feo *FileEncryptionOpts) GetKey() []byte {
+// GetChiperKey will return the key used to create chiper block
+func (feo *FileEncryptionOpts) GetChiperKey() []byte {
 	return feo.Key.Bytes[:feo.GetKeyLength()]
 }
 
+// EncryptFile will encrypt the file using AES
 func EncryptFile(opts *FileEncryptionOpts) (iv []byte, err error) {
 	source, err := os.Open(opts.SourcePath)
 	if err != nil {
@@ -190,7 +196,9 @@ func EncryptFile(opts *FileEncryptionOpts) (iv []byte, err error) {
 	return iv, nil
 }
 
-func DecryptFile(opts *FileEncryptionOpts) ([]byte, error) {
+// DecryptFile will decrypt the file using AES and save the decrypted file to opts.OutputPath.
+// this function will not delete the decrypted file, so it's up to the caller to delete the file after use.
+func DecryptFile(opts *FileEncryptionOpts) error {
 	infile, err := os.Open(opts.SourcePath)
 	if err != nil {
 		return nil, &custerr.ErrChain{

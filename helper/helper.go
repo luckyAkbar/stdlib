@@ -31,18 +31,19 @@ func WrapCloser(closeFn func() error) {
 	}
 }
 
+// MultipartFileSaver save multipart file to given path
 func MultipartFileSaver(file *multipart.FileHeader, path string) error {
 	src, err := file.Open()
 	if err != nil {
 		return err
 	}
-	defer src.Close()
+	defer WrapCloser(src.Close)
 
 	dst, err := os.Create(path)
 	if err != nil {
 		return err
 	}
-	defer dst.Close()
+	defer WrapCloser(dst.Close)
 
 	if _, err = io.Copy(dst, src); err != nil {
 		return err
@@ -51,6 +52,7 @@ func MultipartFileSaver(file *multipart.FileHeader, path string) error {
 	return nil
 }
 
+// DeleteFile wrapper for os.Remove. will delete file from given path
 func DeleteFile(path string) error {
 	return os.Remove(path)
 }
