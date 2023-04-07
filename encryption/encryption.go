@@ -111,13 +111,13 @@ type FileEncryptionOpts struct {
 func (feo *FileEncryptionOpts) GetKeyLength() int {
 	switch feo.AESKeyLength {
 	case AES128:
-		return 16
+		return int(AES128)
 	case AES192:
-		return 24
+		return int(AES192)
 	case AES256:
-		return 32
+		return int(AES256)
 	default:
-		return 16
+		return int(AES128)
 	}
 }
 
@@ -133,18 +133,16 @@ func EncryptFile(opts *FileEncryptionOpts) (iv []byte, err error) {
 		return nil, &custerr.ErrChain{
 			Message: "unable to open source file",
 			Cause:   err,
-			Code:    http.StatusInternalServerError,
 		}
 	}
 
 	defer helper.WrapCloser(source.Close)
 
-	block, err := aes.NewCipher(opts.GetKey())
+	block, err := aes.NewCipher(opts.GetChiperKey())
 	if err != nil {
 		return nil, &custerr.ErrChain{
 			Message: "failed to create chiper block",
 			Cause:   err,
-			Code:    http.StatusInternalServerError,
 		}
 	}
 
@@ -155,7 +153,6 @@ func EncryptFile(opts *FileEncryptionOpts) (iv []byte, err error) {
 		return nil, &custerr.ErrChain{
 			Message: "failed to read file",
 			Cause:   err,
-			Code:    http.StatusInternalServerError,
 		}
 	}
 
@@ -164,7 +161,6 @@ func EncryptFile(opts *FileEncryptionOpts) (iv []byte, err error) {
 		return nil, &custerr.ErrChain{
 			Message: "unable to create destination file",
 			Cause:   err,
-			Code:    http.StatusInternalServerError,
 		}
 	}
 
@@ -177,7 +173,7 @@ func EncryptFile(opts *FileEncryptionOpts) (iv []byte, err error) {
 		if n > 0 {
 			stream.XORKeyStream(buf, buf[:n])
 			// Write into file
-			dest.Write(buf[:n])
+			_, err = dest.Write(buf[:n])
 		}
 
 		if err == io.EOF {
@@ -191,7 +187,13 @@ func EncryptFile(opts *FileEncryptionOpts) (iv []byte, err error) {
 		}
 	}
 
-	dest.Write(iv)
+	_, err = dest.Write(iv)
+	if err != nil {
+		return nil, &custerr.ErrChain{
+			Message: "failed to write iv key to encrypted file",
+			Cause:   err,
+		}
+	}
 
 	return iv, nil
 }
@@ -201,17 +203,17 @@ func EncryptFile(opts *FileEncryptionOpts) (iv []byte, err error) {
 func DecryptFile(opts *FileEncryptionOpts) error {
 	infile, err := os.Open(opts.SourcePath)
 	if err != nil {
-		return nil, &custerr.ErrChain{
+		return &custerr.ErrChain{
 			Message: "unable to open source file for decryption",
 			Cause:   err,
 			Code:    http.StatusInternalServerError,
 		}
 	}
-	defer infile.Close()
+	defer helper.WrapCloser(infile.Close)
 
-	block, err := aes.NewCipher(opts.GetKey())
+	block, err := aes.NewCipher(opts.GetChiperKey())
 	if err != nil {
-		return nil, &custerr.ErrChain{
+		return &custerr.ErrChain{
 			Message: "failed to create chiper block",
 			Cause:   err,
 			Code:    http.StatusInternalServerError,
@@ -222,7 +224,7 @@ func DecryptFile(opts *FileEncryptionOpts) error {
 	// because of the risk of repeat.
 	fi, err := infile.Stat()
 	if err != nil {
-		return nil, &custerr.ErrChain{
+		return &custerr.ErrChain{
 			Message: "failed to get file info",
 			Cause:   err,
 			Code:    http.StatusInternalServerError,
@@ -233,7 +235,7 @@ func DecryptFile(opts *FileEncryptionOpts) error {
 	msgLen := fi.Size() - int64(len(iv))
 	_, err = infile.ReadAt(iv, msgLen)
 	if err != nil {
-		return nil, &custerr.ErrChain{
+		return &custerr.ErrChain{
 			Message: "failed to read file's chunks",
 			Cause:   err,
 			Code:    http.StatusInternalServerError,
@@ -242,7 +244,7 @@ func DecryptFile(opts *FileEncryptionOpts) error {
 
 	outfile, err := os.OpenFile(opts.OutputPath, os.O_RDWR|os.O_CREATE, 0777)
 	if err != nil {
-		return nil, &custerr.ErrChain{
+		return &custerr.ErrChain{
 			Message: "failed open destination decrypted file",
 			Cause:   err,
 			Code:    http.StatusInternalServerError,
@@ -253,9 +255,19 @@ func DecryptFile(opts *FileEncryptionOpts) error {
 	// The buffer size must be multiple of 16 bytes
 	buf := make([]byte, opts.BufferSize)
 	stream := cipher.NewCTR(block, iv)
-	for {
+	isContinue := true
+	for isContinue {
 		n, err := infile.Read(buf)
-		if n > 0 {
+		switch {
+		case err == io.EOF:
+			isContinue = false
+		case err != nil:
+			return &custerr.ErrChain{
+				Message: "failed to read file's chunks",
+				Cause:   err,
+				Code:    http.StatusInternalServerError,
+			}
+		case n > 0:
 			// The last bytes are the IV, don't belong the original message
 			if n > int(msgLen) {
 				n = int(msgLen)
@@ -263,28 +275,17 @@ func DecryptFile(opts *FileEncryptionOpts) error {
 			msgLen -= int64(n)
 			stream.XORKeyStream(buf, buf[:n])
 			// Write into file
-			outfile.Write(buf[:n])
-		}
+			_, err = outfile.Write(buf[:n])
 
-		if err == io.EOF {
-			break
-		}
-
-		if err != nil {
-			break
-		}
-	}
-
-	decrypted, err := os.ReadFile(opts.OutputPath)
-	if err != nil {
-		return nil, &custerr.ErrChain{
-			Message: "failed to read decrypted file",
-			Cause:   err,
-			Code:    http.StatusInternalServerError,
+			if err != nil {
+				return &custerr.ErrChain{
+					Message: "failed to write decrypted file",
+					Cause:   err,
+					Code:    http.StatusInternalServerError,
+				}
+			}
 		}
 	}
 
-	defer helper.DeleteFile(opts.OutputPath)
-
-	return decrypted, nil
+	return nil
 }
