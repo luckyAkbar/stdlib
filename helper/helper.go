@@ -6,6 +6,7 @@ import (
 	"mime/multipart"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/kumparan/go-utils"
@@ -29,6 +30,11 @@ func WrapCloser(closeFn func() error) {
 	if err := closeFn(); err != nil {
 		logrus.Error(err)
 	}
+}
+
+// GenerateUniqueName generate unique name using GenerateID and time.Now().Format(time.RFC3339)
+func GenerateUniqueName() string {
+	return GenerateID() + time.Now().Format(time.RFC3339)
 }
 
 // MultipartFileSaver save multipart file to given path
