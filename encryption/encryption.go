@@ -5,6 +5,7 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/sha256"
 	"encoding/base64"
 	"hash"
 	"io"
@@ -288,4 +289,12 @@ func DecryptFile(opts *FileEncryptionOpts) error {
 	}
 
 	return nil
+}
+
+// SHA256Hash will return the SHA256 hash of the data
+func SHA256Hash(data []byte) []byte {
+	hash := sha256.New()
+	hash.Write(data)
+
+	return hash.Sum(nil)
 }
