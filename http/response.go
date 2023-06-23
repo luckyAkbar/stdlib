@@ -3,8 +3,11 @@ package http
 
 import (
 	"encoding/json"
+	"net/http"
 
+	"github.com/labstack/echo/v4"
 	"github.com/sweet-go/stdlib/encryption"
+	custerr "github.com/sweet-go/stdlib/error"
 )
 
 // StandardResponse is a standard response for all API
@@ -25,6 +28,10 @@ type APIResponse struct {
 // APIResponseGenerator is an interface containing functionalities to generate standard API response
 type APIResponseGenerator interface {
 	GenerateAPIResponse(response *StandardResponse, opts *encryption.SignOpts) (*APIResponse, error)
+
+	// GenerateEchoAPIResponse is a function to generate API response with signature and send it to echo context also act as a wrapper for GenerateAPIResponse
+	// will use http status code the same as response.Status
+	GenerateEchoAPIResponse(c echo.Context, response *StandardResponse, opts *encryption.SignOpts) error
 }
 
 // APIResponseGenerator is a struct containing functionalities to generate API response with signature
@@ -60,4 +67,17 @@ func (arg *apiResponseGenerator) GenerateAPIResponse(response *StandardResponse,
 		Response:  response,
 		Signature: signature,
 	}, nil
+}
+
+func (arg *apiResponseGenerator) GenerateEchoAPIResponse(c echo.Context, response *StandardResponse, opts *encryption.SignOpts) error {
+	resp, err := arg.GenerateAPIResponse(response, opts)
+	if err != nil {
+		return &custerr.ErrChain{
+			Message: "Failed to generate API response",
+			Cause:   err,
+			Code:    http.StatusInternalServerError,
+		}
+	}
+
+	return c.JSON(response.Status, resp)
 }
