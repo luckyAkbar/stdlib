@@ -7,7 +7,6 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/sweet-go/stdlib/encryption"
-	custerr "github.com/sweet-go/stdlib/error"
 )
 
 // StandardResponse is a standard response for all API
@@ -72,11 +71,13 @@ func (arg *apiResponseGenerator) GenerateAPIResponse(response *StandardResponse,
 func (arg *apiResponseGenerator) GenerateEchoAPIResponse(c echo.Context, response *StandardResponse, opts *encryption.SignOpts) error {
 	resp, err := arg.GenerateAPIResponse(response, opts)
 	if err != nil {
-		return &custerr.ErrChain{
-			Message: "Failed to generate API response",
-			Cause:   err,
-			Code:    http.StatusInternalServerError,
-		}
+		return c.JSON(http.StatusInternalServerError, &StandardResponse{
+			Success: false,
+			Message: "server failed to generate API response",
+			Status:  http.StatusInternalServerError,
+			Data:    nil,
+			Error:   "api response generator for specific framework is experiencing error",
+		})
 	}
 
 	return c.JSON(response.Status, resp)
