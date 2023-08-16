@@ -174,7 +174,13 @@ func (w *worker) Stop() {
 	}
 
 	if w.server != nil {
+		logrus.Info("stopping worker server...")
 		w.server.Stop()
+	}
+
+	if w.scheduler != nil {
+		logrus.Info("stopping worker scheduler...")
+		w.scheduler.Shutdown()
 	}
 
 	logrus.Info("worker stopped.")
