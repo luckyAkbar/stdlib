@@ -17,15 +17,48 @@ type worker struct {
 	scheduler *asynq.Scheduler
 }
 
+// Client is the worker client
 type Client interface {
-	RegisterTask(ctx context.Context, task *asynq.Task) (*asynq.TaskInfo, error)
+	EnqueueTask(ctx context.Context, task *asynq.Task) (*asynq.TaskInfo, error)
 }
 
+// Server is the worker server
 type Server interface {
 	Start() error
 	Stop()
 	RegisterTaskHandler([]TaskHandler)
 	RegisterScheduler(task *asynq.Task, cronspec string) error
+}
+
+// Priority is worker priority
+type Priority string
+
+// list worker priority
+var (
+	PriorityHigh    Priority = "high"
+	PriorityDefault Priority = "default"
+	PriorityLow     Priority = "low"
+)
+
+// DefaultQueue is the default queue for worker. If you want to use this value
+// you must use the defined priority above.
+var DefaultQueue = map[string]int{
+	string(PriorityHigh):    7,
+	string(PriorityDefault): 2,
+	string(PriorityLow):     1,
+}
+
+// DefaultHealtCheckFn is the default health check function for worker.
+// This will only log the error
+func DefaultHealtCheckFn(err error) {
+	if err != nil {
+		logrus.Errorf("unhealthy: %+v", err)
+	}
+}
+
+// DefaultEnqueueTaskFailureHandler is the default enqueue task failure handler. Will only log the error
+var DefaultEnqueueTaskFailureHandler = func(task *asynq.Task, opts []asynq.Option, err error) {
+	logrus.WithError(err).Errorf("failed to enqueue task %s", task.Type())
 }
 
 // NewClient create a new worker client
@@ -105,11 +138,13 @@ func (w *worker) Stop() {
 	logrus.Info("worker stopped.")
 }
 
+// TaskHandler is the task handler
 type TaskHandler struct {
 	Type    string
 	handler asynq.HandlerFunc
 }
 
+// RegisterTaskHandler register task handler based on task type. This will be used by worker server and should be used before calling Start()
 func (w *worker) RegisterTaskHandler([]TaskHandler) {
 	for _, th := range []TaskHandler{} {
 		mux.HandleFunc(th.Type, th.handler)
@@ -128,7 +163,7 @@ func (w *worker) RegisterScheduler(task *asynq.Task, cronspec string) error {
 	return nil
 }
 
-func (w *worker) RegisterTask(ctx context.Context, task *asynq.Task) (*asynq.TaskInfo, error) {
+func (w *worker) EnqueueTask(ctx context.Context, task *asynq.Task) (*asynq.TaskInfo, error) {
 	info, err := w.client.EnqueueContext(ctx, task)
 	if err != nil {
 		return nil, err
