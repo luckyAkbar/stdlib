@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/hibiken/asynq"
@@ -27,7 +26,7 @@ type Client interface {
 
 // Server is the worker server
 type Server interface {
-	Start() error
+	Start(errch chan error) error
 	Stop()
 	RegisterTaskHandler([]TaskHandler)
 	RegisterScheduler(task *asynq.Task, cronspec string) error
@@ -144,7 +143,7 @@ func NewServer(redisHost string, serverCfg asynq.Config, schedulerCfg *asynq.Sch
 }
 
 // Start start worker server
-func (w *worker) Start() error {
+func (w *worker) Start(errch chan error) error {
 	logrus.Info("starting worker...")
 
 	go func() {
@@ -152,16 +151,17 @@ func (w *worker) Start() error {
 		if err := w.scheduler.Run(); err != nil {
 			logrus.Error(err)
 
-			os.Exit(1)
+			errch <- err
 		}
 	}()
 
-	if err := w.server.Run(mux); err != nil {
-		logrus.Error(err)
-		os.Exit(1)
-	}
-
-	logrus.Info("worker running...")
+	go func() {
+		logrus.Info("worker running...")
+		if err := w.server.Run(mux); err != nil {
+			logrus.Error(err)
+			errch <- err
+		}
+	}()
 
 	return nil
 }
