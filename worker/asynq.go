@@ -2,7 +2,10 @@ package worker
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"os"
+	"time"
 
 	"github.com/hibiken/asynq"
 	"github.com/sirupsen/logrus"
@@ -54,6 +57,45 @@ func DefaultHealtCheckFn(err error) {
 	if err != nil {
 		logrus.Errorf("unhealthy: %+v", err)
 	}
+}
+
+// WorkerRateLimitError is used to indicate that the task is error because rate limited
+type WorkerRateLimitError struct {
+	RetryIn time.Duration
+}
+
+// Error return string representation of error
+func (wrle *WorkerRateLimitError) Error() string {
+	return fmt.Sprintf("rate limited (retry in  %v)", wrle.RetryIn)
+}
+
+// IsRateLimitError check if error is caused of rate limited
+func IsRateLimitError(err error) bool {
+	_, ok := err.(*WorkerRateLimitError)
+	return ok
+}
+
+// NewWorkerRateLimitError create new WorkerRateLimitError based on supplied interval
+func NewWorkerRateLimitError(interval time.Duration) *WorkerRateLimitError {
+	return &WorkerRateLimitError{
+		RetryIn: interval,
+	}
+}
+
+// DefaultRetryDelayFn is the default retry delay function for worker. Will utilize rate limiter
+var DefaultRetryDelayFn = func(n int, err error, task *asynq.Task) time.Duration {
+	var rateLimiterErr *WorkerRateLimitError
+	if errors.As(err, &rateLimiterErr) {
+		return rateLimiterErr.RetryIn
+	}
+
+	return asynq.DefaultRetryDelayFunc(n, err, task)
+}
+
+// DefaultIsFailureCheckerFn check if the error is due to rate limitting. If not, don't mark it as failure
+// so it will be retried again
+var DefaultIsFailureCheckerFn = func(err error) bool {
+	return !IsRateLimitError(err)
 }
 
 // DefaultEnqueueTaskFailureHandler is the default enqueue task failure handler. Will only log the error
