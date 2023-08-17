@@ -156,7 +156,7 @@ func (w *worker) Start(mux *asynq.ServeMux, errch chan error) {
 
 	go func() {
 		logrus.Info("worker running...")
-		if err := w.server.Run(w.mux); err != nil {
+		if err := w.server.Run(mux); err != nil {
 			logrus.Error(err)
 			errch <- err
 		}
