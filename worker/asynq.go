@@ -188,13 +188,13 @@ func (w *worker) Stop() {
 // TaskHandler is the task handler
 type TaskHandler struct {
 	Type    string
-	handler asynq.HandlerFunc
+	Handler asynq.HandlerFunc
 }
 
 // RegisterTaskHandler register task handler based on task type. This will be used by worker server and should be used before calling Start()
 func (w *worker) RegisterTaskHandler([]TaskHandler) {
 	for _, th := range []TaskHandler{} {
-		w.mux.HandleFunc(th.Type, th.handler)
+		w.mux.HandleFunc(th.Type, th.Handler)
 	}
 }
 
