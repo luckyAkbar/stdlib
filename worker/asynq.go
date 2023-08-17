@@ -25,7 +25,7 @@ type Client interface {
 
 // Server is the worker server
 type Server interface {
-	Start(errch chan error) error
+	Start(errch chan error)
 	Stop()
 	RegisterTaskHandler([]TaskHandler)
 	RegisterScheduler(task *asynq.Task, cronspec string) error
@@ -144,7 +144,7 @@ func NewServer(redisHost string, serverCfg asynq.Config, schedulerCfg *asynq.Sch
 }
 
 // Start start worker server
-func (w *worker) Start(errch chan error) error {
+func (w *worker) Start(errch chan error) {
 	logrus.Info("starting worker...")
 
 	go func() {
@@ -163,8 +163,6 @@ func (w *worker) Start(errch chan error) error {
 			errch <- err
 		}
 	}()
-
-	return nil
 }
 
 // Stop stop worker server
