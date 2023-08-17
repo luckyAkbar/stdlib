@@ -15,7 +15,6 @@ type worker struct {
 	client    *asynq.Client
 	server    *asynq.Server
 	scheduler *asynq.Scheduler
-	mux       *asynq.ServeMux
 }
 
 // Client is the worker client
@@ -27,7 +26,6 @@ type Client interface {
 type Server interface {
 	Start(mux *asynq.ServeMux, errch chan error)
 	Stop()
-	RegisterTaskHandler([]TaskHandler)
 	RegisterScheduler(task *asynq.Task, cronspec string) error
 }
 
@@ -181,19 +179,6 @@ func (w *worker) Stop() {
 	}
 
 	logrus.Info("worker stopped.")
-}
-
-// TaskHandler is the task handler
-type TaskHandler struct {
-	Type    string
-	Handler asynq.HandlerFunc
-}
-
-// RegisterTaskHandler register task handler based on task type. This will be used by worker server and should be used before calling Start()
-func (w *worker) RegisterTaskHandler([]TaskHandler) {
-	for _, th := range []TaskHandler{} {
-		w.mux.HandleFunc(th.Type, th.Handler)
-	}
 }
 
 func (w *worker) RegisterScheduler(task *asynq.Task, cronspec string) error {
