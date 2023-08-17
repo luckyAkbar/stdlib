@@ -11,12 +11,11 @@ import (
 	"github.com/sweet-go/stdlib/helper"
 )
 
-var mux = asynq.NewServeMux()
-
 type worker struct {
 	client    *asynq.Client
 	server    *asynq.Server
 	scheduler *asynq.Scheduler
+	mux       *asynq.ServeMux
 }
 
 // Client is the worker client
@@ -134,11 +133,13 @@ func NewServer(redisHost string, serverCfg asynq.Config, schedulerCfg *asynq.Sch
 	)
 
 	scheduler := asynq.NewScheduler(redisOpts, schedulerCfg)
+	mux := asynq.NewServeMux()
 
 	return &worker{
 		client:    client,
 		server:    server,
 		scheduler: scheduler,
+		mux:       mux,
 	}, nil
 }
 
@@ -157,7 +158,7 @@ func (w *worker) Start(errch chan error) error {
 
 	go func() {
 		logrus.Info("worker running...")
-		if err := w.server.Run(mux); err != nil {
+		if err := w.server.Run(w.mux); err != nil {
 			logrus.Error(err)
 			errch <- err
 		}
@@ -195,7 +196,7 @@ type TaskHandler struct {
 // RegisterTaskHandler register task handler based on task type. This will be used by worker server and should be used before calling Start()
 func (w *worker) RegisterTaskHandler([]TaskHandler) {
 	for _, th := range []TaskHandler{} {
-		mux.HandleFunc(th.Type, th.handler)
+		w.mux.HandleFunc(th.Type, th.handler)
 	}
 }
 
