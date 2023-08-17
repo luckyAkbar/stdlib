@@ -25,7 +25,7 @@ type Client interface {
 
 // Server is the worker server
 type Server interface {
-	Start(errch chan error)
+	Start(mux *asynq.ServeMux, errch chan error)
 	Stop()
 	RegisterTaskHandler([]TaskHandler)
 	RegisterScheduler(task *asynq.Task, cronspec string) error
@@ -133,18 +133,16 @@ func NewServer(redisHost string, serverCfg asynq.Config, schedulerCfg *asynq.Sch
 	)
 
 	scheduler := asynq.NewScheduler(redisOpts, schedulerCfg)
-	mux := asynq.NewServeMux()
 
 	return &worker{
 		client:    client,
 		server:    server,
 		scheduler: scheduler,
-		mux:       mux,
 	}, nil
 }
 
 // Start start worker server
-func (w *worker) Start(errch chan error) {
+func (w *worker) Start(mux *asynq.ServeMux, errch chan error) {
 	logrus.Info("starting worker...")
 
 	go func() {
