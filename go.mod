@@ -42,6 +42,7 @@ require (
 	github.com/getsentry/sentry-go v0.11.0 // indirect
 	github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/goodsign/monday v1.0.0 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
