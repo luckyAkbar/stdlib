@@ -6,6 +6,7 @@ require (
 	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.12
 	github.com/alicebob/miniredis/v2 v2.30.1
 	github.com/banzaicloud/logrus-runtime-formatter v0.0.0-20190729070250-5ae5475bae5e
+	github.com/disintegration/imaging v1.6.2
 	github.com/evalphobia/logrus_sentry v0.8.2
 	github.com/gabriel-vasile/mimetype v1.4.2
 	github.com/golang-jwt/jwt/v4 v4.4.3
