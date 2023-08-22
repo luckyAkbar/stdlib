@@ -27,8 +27,7 @@ func DownloadMemeScrapingResultMedia(ctx context.Context, url, outputPath, refer
 		return err
 	}
 
-	// FIXME: use LogIfError to resolve this linter issue of: Error return value of `resp.Body.Close` is not checked
-	defer resp.Body.Close()
+	defer WrapCloser(resp.Body.Close)
 
 	if resp.StatusCode != http.StatusOK {
 		return errors.New("9gag media returning non 200")
