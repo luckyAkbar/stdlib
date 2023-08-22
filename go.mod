@@ -6,7 +6,9 @@ require (
 	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.12
 	github.com/alicebob/miniredis/v2 v2.30.1
 	github.com/banzaicloud/logrus-runtime-formatter v0.0.0-20190729070250-5ae5475bae5e
+	github.com/disintegration/imaging v1.6.2
 	github.com/evalphobia/logrus_sentry v0.8.2
+	github.com/fogleman/gg v1.3.0
 	github.com/gabriel-vasile/mimetype v1.4.2
 	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/golang/mock v1.6.0
@@ -22,7 +24,9 @@ require (
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.3.2
 	github.com/stretchr/testify v1.8.1
+	github.com/u2takey/ffmpeg-go v0.5.0
 	gopkg.in/guregu/null.v4 v4.0.0
+	gopkg.in/vansante/go-ffprobe.v2 v2.1.1
 	gorm.io/driver/postgres v1.5.0
 	gorm.io/gorm v1.24.7-0.20230306060331-85eaf9eeda11
 )
@@ -30,6 +34,7 @@ require (
 require (
 	github.com/alicebob/gopher-json v0.0.0-20200520072559-a9ecdc9d1d3a // indirect
 	github.com/antihax/optional v1.0.0 // indirect
+	github.com/aws/aws-sdk-go v1.38.20 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/certifi/gocertifi v0.0.0-20210507211836-431795d63e8d // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
@@ -41,6 +46,7 @@ require (
 	github.com/getsentry/sentry-go v0.11.0 // indirect
 	github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/goodsign/monday v1.0.0 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
@@ -53,6 +59,7 @@ require (
 	github.com/jackc/pgx/v5 v5.3.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/labstack/gommon v0.4.0 // indirect
 	github.com/leekchan/accounting v0.3.1 // indirect
@@ -73,10 +80,12 @@ require (
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/jwalterweatherman v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.3 // indirect
+	github.com/u2takey/go-utils v0.3.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/yuin/gopher-lua v1.1.0 // indirect
 	golang.org/x/crypto v0.6.0 // indirect
+	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8 // indirect
 	golang.org/x/net v0.8.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be // indirect
 	golang.org/x/sys v0.6.0 // indirect

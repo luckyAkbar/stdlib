@@ -33,6 +33,13 @@ func WrapCloser(closeFn func() error) {
 	}
 }
 
+// LogIfError log error if error is not nil
+func LogIfError(err error) {
+	if err != nil {
+		logrus.Error(err)
+	}
+}
+
 // GenerateUniqueName generate unique name using GenerateID and time.Now().Format(time.RFC3339)
 func GenerateUniqueName() string {
 	return GenerateID() + time.Now().Format(time.RFC3339)
