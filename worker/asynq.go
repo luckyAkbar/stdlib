@@ -1,3 +1,4 @@
+// Package worker is used to handle asynchronous task both for worker server and worker client
 package worker
 
 import (
@@ -55,32 +56,32 @@ func DefaultHealtCheckFn(err error) {
 	}
 }
 
-// WorkerRateLimitError is used to indicate that the task is error because rate limited
-type WorkerRateLimitError struct {
+// RateLimitError is used to indicate that the task is error because rate limited
+type RateLimitError struct {
 	RetryIn time.Duration
 }
 
 // Error return string representation of error
-func (wrle *WorkerRateLimitError) Error() string {
+func (wrle *RateLimitError) Error() string {
 	return fmt.Sprintf("rate limited (retry in  %v)", wrle.RetryIn)
 }
 
 // IsRateLimitError check if error is caused of rate limited
 func IsRateLimitError(err error) bool {
-	_, ok := err.(*WorkerRateLimitError)
+	_, ok := err.(*RateLimitError)
 	return ok
 }
 
-// NewWorkerRateLimitError create new WorkerRateLimitError based on supplied interval
-func NewWorkerRateLimitError(interval time.Duration) *WorkerRateLimitError {
-	return &WorkerRateLimitError{
+// NewRateLimitError create new RateLimitError based on supplied interval
+func NewRateLimitError(interval time.Duration) *RateLimitError {
+	return &RateLimitError{
 		RetryIn: interval,
 	}
 }
 
 // DefaultRetryDelayFn is the default retry delay function for worker. Will utilize rate limiter
 var DefaultRetryDelayFn = func(n int, err error, task *asynq.Task) time.Duration {
-	var rateLimiterErr *WorkerRateLimitError
+	var rateLimiterErr *RateLimitError
 	if errors.As(err, &rateLimiterErr) {
 		return rateLimiterErr.RetryIn
 	}
