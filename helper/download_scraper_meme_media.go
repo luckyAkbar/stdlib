@@ -39,7 +39,7 @@ func DownloadMemeScrapingResultMedia(ctx context.Context, url, outputPath, refer
 		return "", err
 	}
 
-	filename := outputPath + GenerateID()
+	filename := outputPath + "/" + GenerateID()
 
 	outfile, err := os.Create(filename)
 	if err != nil {
