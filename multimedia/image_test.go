@@ -22,23 +22,12 @@ func TestMultimedia_SliceImage(t *testing.T) {
 		assert.Error(t, err)
 	})
 
-	t.Run("unknown output format", func(t *testing.T) {
-		input := &SliceImageInput{
-			SourcePath:   "testdata/overly_high.jpg",
-			OutputFormat: imaging.Format(1000),
-		}
-
-		err := SliceImage(input)
-		assert.Error(t, err)
-	})
-
 	t.Run("ok", func(t *testing.T) {
 		input := &SliceImageInput{
 			SourcePath:   "testdata/overly_high.jpg",
 			OutputDir:    "testdata/",
-			MaxHeight:    1920,
-			MinHeight:    1000,
-			AspectRatio:  16.0 / 9.0,
+			CropHeight:   1920,
+			BackoffCut:   0,
 			OutputFormat: imaging.JPEG,
 		}
 

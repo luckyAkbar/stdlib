@@ -8,11 +8,11 @@ import (
 	"image/color"
 	"io"
 	"os/exec"
-	"path/filepath"
 	"strings"
 
 	"github.com/disintegration/imaging"
 	"github.com/fogleman/gg"
+	"github.com/sweet-go/stdlib/helper"
 )
 
 // SliceImageInput is the input for SliceImage function
@@ -20,17 +20,19 @@ type SliceImageInput struct {
 	SourcePath string
 
 	// OutputPath is the directory where the sliced images will be saved.
-	OutputDir    string
-	MaxHeight    int
-	MinHeight    int
+	OutputDir  string
+	CropHeight int
+
+	// BackoffCut is used to move the start point of the image to be cropped.
+	// If set greater than 0, the result image will have a small portion last part of the previous image as a continuity.
+	BackoffCut   int
 	OutputFormat imaging.Format
-	AspectRatio  float64
 	OutputFiles  []string
 }
 
 // OutputFileName returns the output file name for the given y position
 func (sii *SliceImageInput) OutputFileName(y int) string {
-	return fmt.Sprintf("%s/%d.%s", sii.OutputDir, y, strings.ToLower(sii.OutputFormat.String()))
+	return fmt.Sprintf("%s%d%s.%s", sii.OutputDir, y, helper.GenerateID(), strings.ToLower(sii.OutputFormat.String()))
 }
 
 // SliceImage slices the image into multiple images with the given height.
@@ -43,21 +45,25 @@ func SliceImage(input *SliceImageInput) error {
 		return err
 	}
 
-	originalWidth := ori.Bounds().Dx()
-	cropHeight := int(float64(originalWidth) / input.AspectRatio)
-	if cropHeight < input.MaxHeight {
-		cropHeight = input.MinHeight
-	}
+	for y := 0; y < ori.Bounds().Dy(); y += input.CropHeight {
+		ystart := y
 
-	for y := 0; y <= ori.Bounds().Dy()-cropHeight; y += cropHeight {
-		croppedImage := imaging.Crop(ori, image.Rect(0, y, originalWidth, y+cropHeight))
-		outputImagePath := filepath.Join(input.OutputFileName(y))
-		err := imaging.Save(croppedImage, outputImagePath)
-		if err != nil {
+		if ystart-input.BackoffCut > 0 {
+			ystart = y - input.BackoffCut
+		}
+
+		// this part is used to avoid the last image to be cropped really small
+		if ori.Bounds().Dy()-y < input.CropHeight {
+			ystart = ori.Bounds().Dy() - input.CropHeight
+		}
+
+		crop := imaging.Crop(ori, image.Rect(0, ystart, ori.Bounds().Dx(), y+input.CropHeight))
+		outputPath := input.OutputFileName(y)
+		if err := imaging.Save(crop, outputPath); err != nil {
 			return err
 		}
 
-		input.OutputFiles = append(input.OutputFiles, outputImagePath)
+		input.OutputFiles = append(input.OutputFiles, outputPath)
 	}
 
 	return nil
