@@ -36,8 +36,8 @@ func (sii *SliceImageInput) OutputFileName(y int) string {
 }
 
 // SliceImage slices the image into multiple images with the given height.
-// If the image height is smaller than the max height, it will be assigned with the min height.
-// This will help to prevent the resulting images are so small due to the aspect ratio & original width.
+// If the last part image is smaller than the crop height, the last part image will be cropped with height equal to the crop height
+// to prevent the last part image to be cropped really small.
 // If the func return error, you must delete the generated files manually (if any).
 func SliceImage(input *SliceImageInput) error {
 	ori, err := imaging.Open(input.SourcePath)
