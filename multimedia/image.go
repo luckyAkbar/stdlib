@@ -78,15 +78,15 @@ type ScaleDownImageByWidthInput struct {
 }
 
 // ScaleDownImageByWidth scales down the image by width while maintaining the aspect ratio.
-// If the image width is smaller than the desired width, do nothing.
+// If image width is smaller than the desired width, set the output path to the source path and do nothing else
 func ScaleDownImageByWidth(input *ScaleDownImageByWidthInput) error {
 	img, err := imaging.Open(input.SourcePath)
 	if err != nil {
 		return err
 	}
 
-	// if image width is smaller than the desired width, do nothing
 	if img.Bounds().Dx() <= input.Width {
+		input.OutputPath = input.SourcePath
 		return nil
 	}
 
