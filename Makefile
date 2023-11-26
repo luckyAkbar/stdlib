@@ -61,11 +61,19 @@ encryption/mock/mock_jwt_token_generator.go:
 http/mock/mock_response.go:
 		mockgen -destination=http/mock/mock_response.go -package=http_mock github.com/sweet-go/stdlib/http APIResponseGenerator
 
+worker/mock/mock_worker_client.go:
+	mockgen -destination=worker/mock/mock_worker_client.go -package=worker_mock github.com/sweet-go/stdlib/worker Client
+
+worker/mock/mock_worker_server.go:
+	mockgen -destination=worker/mock/mock_worker_server.go -package=worker_mock github.com/sweet-go/stdlib/worker Server
+
 mockgen: cacher/mock/redis.go \
 	mail/mock/mail_utility_utility.go \
 	mail/mock/mail_utility_client.go \
 	encryption/mock/mock_jwt_token_generator.go \
-	http/mock/mock_response.go
+	http/mock/mock_response.go \
+	worker/mock/mock_worker_client.go \
+	worker/mock/mock_worker_server.go
 
 clean:
 	find -type f -name 'mock_*.go' -delete
