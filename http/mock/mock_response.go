@@ -8,6 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	echo "github.com/labstack/echo/v4"
 	encryption "github.com/sweet-go/stdlib/encryption"
 	http "github.com/sweet-go/stdlib/http"
 )
@@ -48,4 +49,18 @@ func (m *MockAPIResponseGenerator) GenerateAPIResponse(arg0 *http.StandardRespon
 func (mr *MockAPIResponseGeneratorMockRecorder) GenerateAPIResponse(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateAPIResponse", reflect.TypeOf((*MockAPIResponseGenerator)(nil).GenerateAPIResponse), arg0, arg1)
+}
+
+// GenerateEchoAPIResponse mocks base method.
+func (m *MockAPIResponseGenerator) GenerateEchoAPIResponse(arg0 echo.Context, arg1 *http.StandardResponse, arg2 *encryption.SignOpts) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateEchoAPIResponse", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GenerateEchoAPIResponse indicates an expected call of GenerateEchoAPIResponse.
+func (mr *MockAPIResponseGeneratorMockRecorder) GenerateEchoAPIResponse(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateEchoAPIResponse", reflect.TypeOf((*MockAPIResponseGenerator)(nil).GenerateEchoAPIResponse), arg0, arg1, arg2)
 }
