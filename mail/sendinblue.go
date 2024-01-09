@@ -2,8 +2,6 @@ package mail
 
 import (
 	"context"
-	"fmt"
-	"net/http"
 
 	sendinblue "github.com/sendinblue/APIv3-go-library/lib"
 	"github.com/sweet-go/stdlib/helper"
@@ -52,12 +50,6 @@ func (s *SendInBlue) SendEmail(ctx context.Context, mail *Mail) (string, error) 
 	}
 
 	defer helper.WrapCloser(res.Body.Close)
-
-	if res.StatusCode != http.StatusAccepted {
-		e := fmt.Errorf("failed to send email send in blue: %v", res)
-		return "", e
-	}
-
 	return helper.Dump(email), nil
 }
 
