@@ -2,7 +2,7 @@ package mail
 
 import (
 	"context"
-	"fmt"
+	"errors"
 )
 
 // ClientSignature signature for every registered mailing client
@@ -35,14 +35,17 @@ func NewUtility(clients ...Client) Utility {
 	}
 }
 
-func (m *mail) SendEmail(ctx context.Context, mail *Mail) (metadata string, sig ClientSignature, err error) {
+func (m *mail) SendEmail(ctx context.Context, mail *Mail) (string, ClientSignature, error) {
+	fullErr := errors.New("send email error: ")
 	for _, client := range m.clients {
-		metadata, err = client.SendEmail(ctx, mail)
+		metadata, err := client.SendEmail(ctx, mail)
 
 		if err == nil {
 			return metadata, client.GetClientName(), nil
 		}
+
+		fullErr = errors.Join(fullErr, err)
 	}
 
-	return "", "", fmt.Errorf("failed to send email: %w", err)
+	return "", "", fullErr
 }
