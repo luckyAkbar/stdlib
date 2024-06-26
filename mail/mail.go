@@ -93,3 +93,30 @@ func (m *Mail) MailgunBCC() []string {
 
 	return bcc
 }
+
+func (m *Mail) ResendTo() []string {
+	var tos []string
+	for _, to := range m.To {
+		tos = append(tos, to.Email)
+	}
+
+	return tos
+}
+
+func (m *Mail) ResendCc() []string {
+	var ccs []string
+	for _, cc := range m.Cc {
+		ccs = append(ccs, cc.Email)
+	}
+
+	return ccs
+}
+
+func (m *Mail) ResendBcc() []string {
+	var bccs []string
+	for _, bcc := range m.Bcc {
+		bccs = append(bccs, bcc.Email)
+	}
+
+	return bccs
+}
