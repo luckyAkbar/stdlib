@@ -8,8 +8,6 @@ import (
 
 const ResendSignature ClientSignature = "resend"
 
-// api key = re_6iSWfe8R_2dTh7juMqTtWPtwp2JabBr1R
-
 type ResendConfig struct {
 	ApiKey            string
 	ServerSenderEmail string
