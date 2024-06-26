@@ -19,11 +19,12 @@ require (
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/mailgun/mailgun-go/v4 v4.8.2
 	github.com/redis/go-redis/v9 v9.0.3
+	github.com/resendlabs/resend-go v1.7.0
 	github.com/sendinblue/APIv3-go-library v2.0.0+incompatible
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.3.2
-	github.com/stretchr/testify v1.8.1
+	github.com/stretchr/testify v1.8.2
 	github.com/u2takey/ffmpeg-go v0.5.0
 	gopkg.in/guregu/null.v4 v4.0.0
 	gopkg.in/vansante/go-ffprobe.v2 v2.1.1
@@ -65,7 +66,7 @@ require (
 	github.com/leekchan/accounting v0.3.1 // indirect
 	github.com/magiconair/properties v1.8.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.17 // indirect
+	github.com/mattn/go-isatty v0.0.18 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.19 // indirect
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -88,7 +89,7 @@ require (
 	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8 // indirect
 	golang.org/x/net v0.8.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be // indirect
-	golang.org/x/sys v0.6.0 // indirect
+	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.8.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	google.golang.org/appengine v1.1.0 // indirect
